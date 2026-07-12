@@ -7,23 +7,21 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Enable CORS with support for credentials & explicit frontend URL origins
+// Origins are read from ALLOWED_ORIGINS (comma-separated) in .env so new
+// domains can be added without touching code.
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean)
+  : ['http://localhost:5173'];
+
 const corsOptions = {
   origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (mobile apps, curl, Render health checks)
     if (!origin) return callback(null, true);
-    
-    // Explicit allowed frontend URL range
-    const allowedOrigins = [
-      process.env.FRONTEND_URL || 'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'http://localhost:5174',
-      'http://127.0.0.1:5174',
-      'http://localhost:3000'
-    ];
-    
-    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.warn(`CORS blocked request from origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -83,5 +81,5 @@ app.use((err, req, res, next) => {
 // Start Server
 app.listen(PORT, () => {
   console.log(`EduPrime backend server is running on port ${PORT}`);
-  console.log(`CORS allows frontend requests from: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+  console.log(`CORS allowed origins: ${allowedOrigins.join(', ')}`);
 });
