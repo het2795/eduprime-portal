@@ -90,7 +90,7 @@ const AIChat = () => {
       // Handle bullet items e.g. • item
       if (line.trim().startsWith('•')) {
         return (
-          <p key={idx} className="pl-4 py-0.5 relative text-xs text-slate-350 leading-relaxed">
+          <p key={idx} className="pl-4 py-0.5 relative text-xs text-slate-200 leading-relaxed">
             <span className="absolute left-0 text-brand-blue font-bold">•</span>
             <span dangerouslySetInnerHTML={{ __html: formatted.replace('•', '').trim() }} />
           </p>
@@ -175,7 +175,7 @@ const AIChat = () => {
             key={reply}
             onClick={() => handleSendMessage(reply)}
             disabled={submitting}
-            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200/70 dark:bg-navy-700 dark:hover:bg-navy-600 text-[10.5px] font-bold font-heading text-slate-500 dark:text-slate-350 rounded-full transition-colors border border-slate-200 dark:border-navy-600"
+            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200/70 dark:bg-slate-800 dark:hover:bg-blue-600 text-[10.5px] font-bold font-heading text-slate-600 dark:text-slate-200 hover:text-slate-800 dark:hover:text-white rounded-full transition-all border border-slate-300 dark:border-slate-500 disabled:opacity-50"
           >
             {reply}
           </button>
