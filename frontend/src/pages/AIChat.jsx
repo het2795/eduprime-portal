@@ -85,18 +85,20 @@ const AIChat = () => {
   const formatText = (text) => {
     return text.split('\n').map((line, idx) => {
       let formatted = line;
-      // Handle bold texts e.g. **text**
+      // Strip bold markdown **text** → <strong>
       formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-white">$1</strong>');
+      // Strip italic markdown *text* → plain text (avoids literal asterisks in output)
+      formatted = formatted.replace(/\*(.*?)\*/g, '$1');
       // Handle bullet items e.g. • item
       if (line.trim().startsWith('•')) {
         return (
-          <p key={idx} className="pl-4 py-0.5 relative text-xs text-slate-200 leading-relaxed">
+          <p key={idx} className="pl-4 py-0.5 relative text-xs text-slate-100 dark:text-slate-100 leading-relaxed">
             <span className="absolute left-0 text-brand-blue font-bold">•</span>
             <span dangerouslySetInnerHTML={{ __html: formatted.replace('•', '').trim() }} />
           </p>
         );
       }
-      return <p key={idx} className="min-h-[1rem] leading-relaxed text-xs text-slate-200" dangerouslySetInnerHTML={{ __html: formatted }} />;
+      return <p key={idx} className="min-h-[1rem] leading-relaxed text-xs text-slate-100 dark:text-slate-100" dangerouslySetInnerHTML={{ __html: formatted }} />;
     });
   };
 
@@ -169,13 +171,19 @@ const AIChat = () => {
       </div>
 
       {/* Suggestion Chips */}
-      <div className="px-5 py-3 border-t border-slate-150 dark:border-navy-700/50 select-none overflow-x-auto flex gap-1.5 whitespace-nowrap bg-slate-50/20 dark:bg-navy-900/10">
+      <div className="px-5 py-3 border-t border-slate-150 dark:border-navy-700 select-none overflow-x-auto flex gap-2 whitespace-nowrap bg-slate-50 dark:bg-navy-900/60">
         {quickReplies.map((reply) => (
           <button
             key={reply}
             onClick={() => handleSendMessage(reply)}
             disabled={submitting}
-            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200/70 dark:bg-slate-800 dark:hover:bg-blue-600 text-[10.5px] font-bold font-heading text-slate-600 dark:text-slate-200 hover:text-slate-800 dark:hover:text-white rounded-full transition-all border border-slate-300 dark:border-slate-500 disabled:opacity-50"
+            className="px-3.5 py-1.5 rounded-full text-[10.5px] font-bold font-heading transition-all disabled:opacity-40
+              bg-white dark:bg-slate-700
+              border border-slate-300 dark:border-slate-500
+              text-slate-700 dark:text-slate-100
+              hover:bg-brand-blue hover:border-brand-blue hover:text-white
+              dark:hover:bg-brand-blue dark:hover:border-brand-blue dark:hover:text-white
+              shadow-sm"
           >
             {reply}
           </button>
